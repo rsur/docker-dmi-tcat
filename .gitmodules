@@ -1,0 +1,3 @@
+[submodule "src/dmi-tcat"]
+	path = src/dmi-tcat
+	url = git@github.com:rsur/dmi-tcat.git

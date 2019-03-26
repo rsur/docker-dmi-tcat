@@ -1,0 +1,9 @@
+
+*~
+*.swp
+*.bak
+*.log
+*.conf
+*.ini
+
+/config.php
