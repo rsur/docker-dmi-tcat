@@ -6,4 +6,5 @@
 *.conf
 *.ini
 
+/.env
 /config.php

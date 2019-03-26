@@ -1,0 +1,15 @@
+
+version: '3'
+
+services:
+
+    tcat:
+        image: rsur/tcat:latest
+        ports:
+            - ${HTTP_PORT}:80
+        restart: unless-stopped
+        env_file:
+            - .env
+        volumes:
+            - ${TCAT_CONFIG}:/var/www/html/config.php
+

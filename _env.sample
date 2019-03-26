@@ -1,0 +1,5 @@
+
+HTTP_PORT=8080
+
+TCAT_CONFIG=./config.php
+

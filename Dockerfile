@@ -5,13 +5,11 @@ MAINTAINER rs@cogsci.bandungfe.net
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN \
-	echo "- Remove Jessie dead repos ..." &>/dev/null && \
 	grep -v jessie-updates /etc/apt/sources.list > \
 		/tmp/sources.list && \
 	mv -f /tmp/sources.list /etc/apt && \
 	echo '#' > /etc/apt/sources.list.d/backports.list && \
 	\
-	echo "- My ISP can only read local mirror ..." &>/dev/null && \
 	sed -i 's:deb.debian.org:kartolo.sby.datautama.net.id:g;' \
 		/etc/apt/sources.list && \
 	\
