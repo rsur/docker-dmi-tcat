@@ -12,4 +12,5 @@ services:
             - .env
         volumes:
             - ${TCAT_CONFIG}:/var/www/html/config.php
+            - ${TCAT_CACHE}:/var/www/html/analysis/cache
 
