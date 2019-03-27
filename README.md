@@ -56,7 +56,7 @@ manually.
     TCAT_DBUSER=tcat
     TCAT_DBPASS=seekerit
     TCAT_DBNAME=tcat_db
-    TCAT_DBHOST=192.168.1.120;port=13306
+    TCAT_DBHOST=localhost
 
     CONS_KEY=XxXxXxXxXxXxXxXxXxXxXxXxX
     CONS_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -65,7 +65,8 @@ manually.
     ```
 
     or you can just copy `_env.sample` from this repo as
-    `.env-standalone` and edit from there.
+    `.env-standalone` and edit from there. Make sure `TCAT_DB*`
+	variables match your MySQL setup.
 
 5.  Run the container:
 
