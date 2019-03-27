@@ -6,4 +6,4 @@
 *.conf
 *.ini
 
-/.env
+/.env*
