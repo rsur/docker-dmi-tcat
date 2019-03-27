@@ -31,8 +31,8 @@ manually.
 	$ docker pull rsur/tcat:latest
 	```
 
-3.  Create MySQL database and user for your TCAT installation, roughly
-    as follows:
+3.  Assuming you already have MySQL up and running, create MySQL
+    database and user for your TCAT installation, roughly as follows:
 
     ```
     $ mysql -u root
@@ -71,7 +71,8 @@ manually.
 5.  Run the container:
 
     ```
-    $ docker run --env-file .env-standalone -p 8081:80 rsur/tcat-latest
+    $ docker run --rm -it --env-file .env-standalone -p 8081:80 \
+    > rsur/tcat-latest
     ```
 
     There should be log messages appearing on your screen. If something
@@ -85,6 +86,9 @@ manually.
     ```
 
     and do your usual TCAT activity from there.
+
+7.  When you're done, go to terminal where docker was started, and
+    press Ctrl+C.
 
 
 ## Deployment with `docker-compose`
@@ -114,13 +118,20 @@ standalone deployment, this is the preferred way to go.
     When you're done with the test, shut down the container by pressing
     Ctrl+C.
 
-7.  Run your container again, but this time, let it daemonized.
+5.  Run your container again, but this time, let it daemonized.
 
     ```
     $ docker-compose up -d
     ```
 
 6.  Open TCAT from browser as usual.
+
+7.  When you're done, go to terminal where docker-compose was started,
+    and shut it down with:
+
+	```
+	$ docker-compose down
+	```
 
 
 ## TODO: Securing Installation
