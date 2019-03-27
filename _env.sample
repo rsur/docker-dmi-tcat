@@ -1,6 +1,20 @@
 
-HTTP_PORT=8080
+TCAT_ROLE=track
+TCAT_BASE_URL=http://localhost:8081/
 
-TCAT_CONFIG=./config.php
-TCAT_CACHE=/tmp/tcat-cache
+TCAT_HTTP_PORT=8080
+TCAT_CACHE_DIR=/tmp/tcat-cache
+TCAT_LOGS_DIR=/tmp/tcat-logs
 
+TCAT_DBUSER=tcat
+TCAT_DBPASS=seekerit
+TCAT_DBNAME=tcat_db
+# if you're using compose, this should always be set to 'maria'
+TCAT_DBHOST=localhost
+
+CONS_KEY=XxXxXxXxXxXxXxXxXxXxXxXxX
+CONS_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CONS_USER_TOKEN=YYYYYYYYY-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+CONS_USER_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+MARIA_DIR=/tmp/tcat-maria

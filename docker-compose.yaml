@@ -3,14 +3,36 @@ version: '3'
 
 services:
 
-    tcat:
-        image: rsur/tcat:latest
-        ports:
-            - ${HTTP_PORT}:80
+    maria:
+        image: mariadb:10.4
         restart: unless-stopped
+        environment:
+            - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+            - MYSQL_USER=${TCAT_DBUSER}
+            - MYSQL_PASSWORD=${TCAT_DBPASS}
+            - MYSQL_DATABASE=${TCAT_DBNAME}
         env_file:
             - .env
         volumes:
-            - ${TCAT_CONFIG}:/var/www/html/config.php
-            - ${TCAT_CACHE}:/var/www/html/analysis/cache
+            - ${MARIA_DIR}:/var/lib/mysql
+        networks:
+            - tcatnet
 
+    nginx:
+        image: rsur/tcat:latest
+        ports:
+            - ${TCAT_HTTP_PORT}:80
+        restart: unless-stopped
+        depends_on:
+            - maria
+        env_file:
+            - .env
+        volumes:
+            - ${TCAT_CACHE_DIR}:/var/www/html/analysis/cache
+            - ${TCAT_LOGS_DIR}:/var/www/html/logs
+        networks:
+            - tcatnet
+
+
+networks:
+    tcatnet:

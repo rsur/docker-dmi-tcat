@@ -1,0 +1,236 @@
+<?php
+
+
+/**
+ * Read params from enviromnent variables, or from a dumped
+ * serialization in case web server doesn't pass environment
+ * variables to interpreter.
+ */
+function _getenv($key) {
+    if (getenv($key) !== false)
+        return getenv($key);
+    if (!file_exists('/tmp/env'))
+        return "noop";
+    $env = unserialize(file_get_contents('/tmp/env'));
+    if (isset($env[$key]))
+        return $env[$key];
+    return "noop";
+}
+
+/*
+ * Database credentials
+ */
+
+$dbuser = _getenv("TCAT_DBUSER");
+$dbpass = _getenv("TCAT_DBPASS");
+$database = _getenv("TCAT_DBNAME");
+$hostname = _getenv("TCAT_DBHOST");
+
+/*
+ * Capturing role(s) for DMI-TCAT
+ * Here you can define which types of capturing you would like to do
+ * Possible values are "track", "follow", "onepercent". 
+ * Note that you can only do one of track, follow or onepercent per IP address and capturing key
+ */
+$role = _getenv("TCAT_ROLE");
+if (!in_array($role, array("track", "follow", "onepercent")))
+    $role = "track";
+define('CAPTUREROLES', serialize(array($role)));
+
+/*
+ * The user(s) who can add and modify query bins. 
+ * All users should exist in your htaccess authentication configuration.
+ * Leave the array empty if you do not want to restrict access to the query manager - which, of course, is a security risk.
+ */
+define('ADMIN_USER', serialize(array('admin', 'admin2')));
+
+/*
+ * *Super advanced and currently undocumented feature, leave settings as they are*
+ * We have made it possible to tunnel Twitter API connections through other hosts (obtaining a different source IP address), and use multiple keysets for multiple streaming queries.
+ * Each capture script should define its role, see define('CAPTUREROLES',serialize(array()))
+ * Every distinct role should then get a different network path below
+ * 
+ */
+$GLOBALS["HOSTROLE"] = array(
+    'track' => "https://stream.twitter.com/",
+    'follow' => "https://stream.twitter.com/",
+    'onepercent' => "https://stream.twitter.com/",
+);
+
+/*
+ * Mail address to report critical errors to
+ */
+$mail_to = "";
+
+/*
+ * Twitter API keys (basic configuration)
+ */
+
+// Please fill in your API credentials here
+
+$twitter_consumer_key = _getenv("CONS_KEY");
+$twitter_consumer_secret = _getenv("CONS_SECRET");
+$twitter_user_token = _getenv("CONS_USER_TOKEN");
+$twitter_user_secret = _getenv("CONS_USER_SECRET");
+
+// List of additional keys to loop over when there is a limited amount of requests per key, e.g. search
+// twitter_keys is an array of arrays listing different Twitter API keys
+$twitter_keys = array(
+    array("twitter_consumer_key" => $twitter_consumer_key,
+        "twitter_consumer_secret" => $twitter_consumer_secret,
+        "twitter_user_token" => $twitter_user_token,
+        "twitter_user_secret" => $twitter_user_secret,
+    )
+);
+
+/*
+ * Twitter API keys (expert configuration, with multiple roles and keys)
+ *
+ * Uncomment and edit code block below to activate.
+ */
+
+/**
+
+// Make sure you have a key for each capture role defined in CAPTUREROLES above
+if (!defined('CAPTURE') || !strcmp(CAPTURE, 'track')) {
+    $twitter_consumer_key = "";
+    $twitter_consumer_secret = "";
+    $twitter_user_token = "";
+    $twitter_user_secret = "";
+} elseif (!strcmp(CAPTURE, "follow")) {
+    $twitter_consumer_key = "";
+    $twitter_consumer_secret = "";
+    $twitter_user_token = "";
+    $twitter_user_secret = "";
+} elseif (!strcmp(CAPTURE, "onepercent")) {
+    $twitter_consumer_key = "";
+    $twitter_consumer_secret = "";
+    $twitter_user_token = "";
+    $twitter_user_secret = "";
+}
+
+**/
+
+/*
+ * Klout account info (optional)
+ */
+$kloutapi_key = "";
+
+/*
+ * URL root in which dmi-tcats resides
+ */
+#define('BASE_URL', 'http://example.com/dmi-tcat/');
+define('BASE_URL', _getenv("TCAT_BASE_URL"));
+
+/*
+ * URL root in which analysis resides
+ */
+define('ANALYSIS_URL', BASE_URL . 'analysis/');
+
+/*
+ * Do you wish to enable fully automatic updates in the background? 
+ */
+define('AUTOUPDATE_ENABLED', false);
+
+/*
+ * Up to what complexity level do you wish to allow automatic upgrades (ie. in the background or at user request from inside the capture panel)?
+ *
+ * Since a lot of these updates maintain locks on the database, captures may be blocked until the upgrade has finished.
+ * You may want to select a higher complexity level ONLY if you have small datasets or do not mind a temporary interruption of service.
+ *
+ * Legal values are: trivial, substantial, expensive
+ */
+define('AUTOUPDATE_LEVEL', 'trivial');
+
+/*
+ * When no database activity has occured for IDLETIME seconds during a track, the controller restarts the process. Do not set this too low,
+ * as there is caching before we insert. Usually the default is fine.
+ */
+define('IDLETIME', 600);
+
+/*
+ * Report rate limit problems to the administrator every x hours ( 0 = no mail reporting )
+ */
+define('RATELIMIT_MAIL_HOURS', 24);
+
+/*
+ * Time zone
+ */
+date_default_timezone_set('UTC'); // Warning: must be 'UTC'. Do not change!
+
+/*
+ * Error reporting verbosity
+ */
+error_reporting(E_ALL & ~E_DEPRECATED);
+
+/*
+ * How long the script is allowed to run
+ */
+ini_set("max_execution_time", 3600);
+
+/*
+ * How much memory the script is allowed to take
+ */
+ini_set("memory_limit", "4G");
+
+/*
+ * Enable URL expander? This script will follow the links of all URLs inside tweets and resolve the final location they point towards.
+ * It generates a lot of requests to external hosts, but allows for more detailed URL queries.
+ */
+define('ENABLE_URL_EXPANDER', false);
+
+/* Sysload monitoring. Display a traffic light indicating system load in the analysis panel */
+
+define('TCAT_SYSLOAD_CHECKING', false);
+
+/* If the sysload monitoring is enabled, a warning is issued when the sum processing time of all running tcat queries has reached the threshold below */
+
+define('TCAT_SYSLOAD_WARNING', 20);
+
+/* If the sysload monitoring is enabled, a blocking message is shown when the sum processing time of all running tcat queries has reached the threshold below */
+
+define('TCAT_SYSLOAD_MAXIMUM', 55);
+
+/*
+ * Set encoding
+ */
+mb_internal_encoding("UTF-8");
+
+/*
+ * set location of php
+ * find the location by typing 'which php' on the command line of your terminal
+ */
+define('PHP_CLI', '/usr/bin/php');
+
+/*
+ * Use mysql INSERT DELAYED statements to insert data into the MySQL database.
+ * Recommended only for high-load sites, who may have nightly backupscripts locking database tables.
+ * Make sure to adjust the MySQL server variables delayed_queue_size, max_delayed_threads to an appropriate sizes.
+ * Experts only.
+ */
+define('USE_INSERT_DELAYED', false);
+
+/*
+ * Set to true, if you want all insert statements to fail on errors. Even though such errors are caught and reported,
+ * setting this option on a production site is not recommended, since we are using multi-insert statements and all tweets
+ * in such an insert will be lost on errors.
+ * Developers only.
+ */
+define('DISABLE_INSERT_IGNORE', false);
+
+/*
+ * This is the Git repository from which TCAT was installed from.
+ *
+ * If this is a GitHub HTTPS URL, it will be converted into a GitHub API URL
+ * to check whether the current install is up-to-date.
+ *
+ * You will want to change this only when you have forked the repository.
+ */
+define('REPOSITORY_URL', 'https://github.com/digitalmethodsinitiative/dmi-tcat.git');
+
+/*
+ * Enable producing a (huge) JSON dump with raw Tweet contents for debugging purposes.
+ */
+define('ENABLE_JSON_DUMP', false);
+ 
+?>

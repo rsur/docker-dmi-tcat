@@ -7,4 +7,3 @@
 *.ini
 
 /.env
-/config.php

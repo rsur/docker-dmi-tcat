@@ -25,17 +25,13 @@ RUN \
 		nginx \
 		&& \
 	apt-get -y autoremove && \
-	apt-get clean && \
-	\
-	mkdir -p /var/www/html/proc && \
-	mkdir -p /var/www/html/logs && \
-	mkdir -p /var/www/html/analysis/cache
+	apt-get clean
 
 COPY src/dmi-tcat /var/www/html/
-COPY src/dmi-tcat/config.php.example /var/www/html/config.php
+COPY config/config.php /var/www/html/config.php
 COPY nginx/default /etc/nginx/sites-available/
-COPY supervisor/dmit_track.conf /etc/supervisor/conf.d/
-COPY start.sh /usr/local/bin/
+COPY supervisor/*.conf /etc/supervisor/conf.d/
+COPY bin/start.sh /usr/local/bin/
 
 EXPOSE 80
 CMD ["/usr/local/bin/start.sh"]
