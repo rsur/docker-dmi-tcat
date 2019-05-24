@@ -93,7 +93,7 @@ manually.
 
 ## Deployment with `docker-compose`
 
-This cover installation under docker-compose. The database is using
+This covers installation under docker-compose. The database is using
 MariaDB and prepared automatically. Unless you're experimenting with
 standalone deployment, this is the preferred way to go.
 
@@ -106,7 +106,14 @@ standalone deployment, this is the preferred way to go.
     to `MARIA_DIR` variable. It's where your MariaDB working directory
     is located on your filesystem.
 
-4.  Run `docker-compose` for testing:
+4.  Create a docker network called `tcatnet` if you haven't already.
+    This setup is isolated in a separate network.
+
+    ```
+	$ docker network create tcatnet
+	```
+
+5.  Run `docker-compose` for testing:
 
     ```
     $ docker-compose up
@@ -118,20 +125,24 @@ standalone deployment, this is the preferred way to go.
     When you're done with the test, shut down the container by pressing
     Ctrl+C.
 
-5.  Run your container again, but this time, let it daemonized.
+6.  Run your container again, but this time, let it daemonized.
 
     ```
     $ docker-compose up -d
     ```
 
-6.  Open TCAT from browser as usual.
+7.  Open TCAT from browser as usual.
 
-7.  When you're done, go to terminal where docker-compose was started,
+8.  When you're done, go to terminal where docker-compose was started,
     and shut it down with:
 
 	```
 	$ docker-compose down
 	```
+
+**CAVEAT:** On first run, there's a chance that MariaDB database has
+not yet been initialized but tcat is already running. To overcome this,
+turn off the containers as shown in 8) and turn it on again as in 5).
 
 
 ## TODO: Securing Installation
