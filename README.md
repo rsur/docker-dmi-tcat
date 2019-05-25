@@ -71,7 +71,7 @@ manually.
 5.  Run the container:
 
     ```
-    $ docker run --rm -it --env-file .env-standalone -p 8081:80 \
+    $ docker run --rm -it --env-file .env-standalone -p 8881:80 \
     > rsur/tcat-latest
     ```
 
@@ -135,7 +135,7 @@ standalone deployment, this is the preferred way to go.
 
 **CAVEAT:** On first run, there's a chance that MariaDB database has
 not yet been initialized but TCAT is already running. To overcome this,
-turn off the containers as shown in 7) and turn it on again as in 5).
+turn off the containers as shown in 7) and turn them on again as in 5).
 
 
 ## TODO: Securing Installation
